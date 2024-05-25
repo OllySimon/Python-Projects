@@ -109,11 +109,11 @@ print(zebra.set_coordinates(5, 0, 10))
 
 lion.plot_coordinates(other_animals=[zebra])
 
-# Move and update player
+# Move and update animals.
 print(lion.move(1, 0, 2))
 time.sleep(1)
 print(zebra.move(2, 0, 0))
 time.sleep(1)
 
-# Plot Co-Ordinates:
+# Plot Co-Ordinates, show the animals on the map.
 lion.plot_coordinates(other_animals=[zebra])
