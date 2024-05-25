@@ -1,0 +1,119 @@
+import matplotlib.pyplot as plt
+import time
+import numpy as np
+from numpy import linalg as LA
+from mpl_toolkits.mplot3d import Axes3D
+
+class Animal:
+    def __init__(self, name, species, location, weight, speed, x=0, y=0, z=0):
+        self.name = name
+        self.species = species
+        self.location = location
+        self.weight = weight
+        self.speed = speed
+        self.x = x
+        self.y = y
+        self.z = z
+        self.health = 100
+        self.energy = 100
+        self.experience = 0
+        self.level = 0
+
+    def display_info(self):
+        return f"{self.name} the {self.species} lives in the {self.location}"
+
+    def set_coordinates(self, x, y, z):
+        self.x = x
+        self.y = y
+        self.z = z
+        return f"{self.name} is now at coordinates ({self.x}, {self.y}, {self.z})"
+
+    def get_coordinates(self):
+        return f"{self.name} is currently at coordinates ({self.x}, {self.y}, {self.z})"
+
+    def eat(self, food):
+        self.energy = min(self.energy + 10, 100)
+        self.health = min(self.health + 5, 100)
+        return f"{self.name} has eaten the {food}. {self.energy}(+10) Energy,{self.health}(+5) Health)"
+
+    def hunt(self, prey):
+        self.energy = max(self.energy - 10, 0)
+        self.experience = self.experience + 1
+        self.level = round(self.experience / 10, 0)
+        return f"{self.name} chases and captures the {prey}. Experience Gained: {self.experience} Level: {self.level}"
+
+    def move(self, dx, dy, dz):
+        if self.energy > 0:
+            self.x += dx
+            self.y += dy
+            self.z += dz
+            self.energy = max(self.energy - 5, 0)
+            return f"{self.name} has moved to ({self.x}, {self.y}, {self.z})"
+        else:
+            return f"{self.name} is too tired and cannot move."
+
+    def sleep(self):
+        self.energy = min(self.energy + 25, 100)
+        self.health = min(self.health + 10, 100)
+        return f"{self.name} is sleeping. Energy: {self.energy}(+25)"
+
+    def plot_coordinates(self, other_animals=None):
+        fig = plt.figure()
+        ax = fig.add_subplot(111, projection='3d')
+
+        # Plot this animal's coordinates
+        ax.scatter(self.x, self.y, self.z, c='r', marker='X', label=self.name)
+
+        # Plot other animals' coordinates if provided
+        if other_animals:
+            for animal in other_animals:
+                ax.scatter(animal.x, animal.y, animal.z, marker='o', label=animal.name)
+
+        ax.set_xlim(-25, 25)
+        ax.set_ylim(0, 25)
+        ax.set_zlim(-25, 25)
+
+        ax.set_xlabel('Forward/Backward')
+        ax.set_ylabel('Height')
+        ax.set_zlabel('Left/Right')
+        ax.set_title('The Plains of Africa')
+        ax.legend("Characters")
+
+        # 2D plot for health and energy
+        plt.figtext(0.1, 0.02, f"{self.name} Health: {self.health}", ha="left", fontsize=10,
+                    bbox={"facecolor": "red", "alpha": 0.5, "pad": 5})
+        plt.figtext(0.1, 0.05, f"{self.name} Energy: {self.energy}", ha="left", fontsize=10,
+                    bbox={"facecolor": "blue", "alpha": 0.5, "pad": 5})
+
+        plt.show()
+
+
+lion = Animal("Mr Lion", "African Lion", "Africa", 250, speed=5)
+zebra = Animal(name="Mr Z", species="Plains Zebra", location="Africa", weight=250, speed=4)
+
+print(lion.display_info())
+print(zebra.display_info())
+time.sleep(1)
+
+# Lion hunts, eats, and sleeps.
+print(lion.hunt("Zebra"))
+time.sleep(1)
+print(lion.eat("meat"))
+time.sleep(1)
+print(lion.sleep())
+time.sleep(1)
+
+# Set Co-Ordinates of Lion and Zebra
+print(lion.set_coordinates(5, 0, 5))
+print(zebra.set_coordinates(5, 0, 10))
+
+lion.plot_coordinates(other_animals=[zebra])
+
+# Move and update player
+print(lion.move(1, 0, 2))
+time.sleep(1)
+print(zebra.move(2, 0, 0))
+time.sleep(1)
+
+# Plot Co-Ordinates:
+lion.plot_coordinates(other_animals=[zebra])
